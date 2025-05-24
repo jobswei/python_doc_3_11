@@ -8,6 +8,8 @@ match a:
     case _:
         print("other")
 
+## 带有捕获变量的
+
 
 class Point:
     __match_args__ = ("x", "y")
@@ -41,6 +43,8 @@ where_point(Point(7, 8))
 
 from enum import Enum
 
+from traitlets import default
+
 
 class Color(Enum):
     RED = "red"
@@ -54,36 +58,35 @@ match color:
     case Color.YELLOW:
         print("yellow")
 
+## 其他
 
-def f(a, L=[]):
-    L.append(a)
-    return L
-
-
-def g(a, L=0):
-    L += a
-    return L
+print("==== match list =======")
 
 
-print(f(1))
-print(f(1))
-print(g(1))
-print(g(1))
+def match_list(lis):
+    match lis:
+        case [x, y, *rest] if x == y:
+            print(f"first two items are the same,x=y={y}")
+            print("rest", rest)
+        case [x, y, *_]:
+            print(f"first two items are x={x}, y={y}")
 
 
-def any(x: int, y: int, /, p: int, *, k: int = 1) -> None:
-    """any
+match_list([1, 1, 3])
+match_list([1, 2, 2, 3])
 
-    Args:
-        x (_type_): _description_
-        y (_type_): _description_
-        p (_type_): _description_
-        k (_type_): _description_
-    """
-    print("doc:", any.__doc__)
-    print("ann:", any.__annotations__)
+print("==== match dict =======")
 
 
-any(1, 2, 3, k=4)
-any(1, 2, p=3, k=4)
-# any(1, y=2, p=3, k=4) # 报错，y is position only
+def match_dict(dic):
+    match dic:
+        case {"x": x, "y": y}:
+            print("origin", x, y)
+        case {"z": z}:
+            print(f"z={z}")
+
+
+match_dict({"x": 1, "y": 2, "sd": 3})  # 多余的键会被忽略
+match_dict({"z": 3})
+
+
